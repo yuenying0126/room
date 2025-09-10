@@ -1,83 +1,87 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>HexaRoom 360</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <title>Hexagon Room</title>
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-  <!-- Makes each wall face the center automatically -->
-  <script src="https://unpkg.com/aframe-look-at-component@1.0.0/dist/aframe-look-at-component.min.js"></script>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    #resetBtn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 9999;
+      padding: 10px 15px;
+      font-size: 16px;
+      border-radius: 5px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <a-scene background="color: #000">
+  <a-scene>
+    <!-- Assets -->
     <a-assets>
-      <img id="w1" src="0_Door.jpg" crossorigin="anonymous" />
-      <img id="w2" src="1_Outdoors (Cropped).jpg" crossorigin="anonymous" />
-      <img id="w3" src="2_Boardgaming.png" crossorigin="anonymous" />
-      <img id="w4" src="3_UC.jpg" crossorigin="anonymous" />
-      <img id="w5" src="4_Bear in Pink.png" crossorigin="anonymous" />
-      <img id="w6" src="5_Crossing the Road in Grays (Cropped).jpg" crossorigin="anonymous" />
-      <img id="ceiling" src="Ceiling (Cropped).jpg" crossorigin="anonymous" />
-      <img id="floor" src="Floor (Cropped).jpg" crossorigin="anonymous" />
+      <img id="w1" src="0_Door.jpg">
+      <img id="w2" src="1_Outdoors (Cropped).jpg">
+      <img id="w3" src="2_Boardgaming.png">
+      <img id="w4" src="3_UC.jpg">
+      <img id="w5" src="4_Bear in Pink.png">
+      <img id="w6" src="5_Crossing the Road in Grays (Cropped).jpg">
+      <img id="ceiling" src="Ceiling (Cropped).jpg">
+      <img id="floor" src="Floor (Cropped).jpg">
     </a-assets>
 
-    <!-- Center reference so walls auto-face inward -->
-    <a-entity id="center" position="0 1.8 0" visible="false"></a-entity>
+    <!-- Floor -->
+    <a-plane position="0 0 0" rotation="-90 0 0" width="8" height="8" material="src: #floor; side: double"></a-plane>
 
-    <!--
-      <!-- Camera: stationary at eye height; drag/gyroscope to look around -->
-      <!a-entity camera wasd-controls="acceleration: 0" look-controls position="0 1.8 0"></a-entity>
-    -->
-    <!-- Camera: stationary at eye height; drag/gyroscope to look around; allows movement using keys -->
-    <a-entity id="cam" camera wasd-controls="acceleration: 20" look-controls position="0 1.8 0"></a-entity>
+    <!-- Ceiling -->
+    <a-plane position="0 3.6 0" rotation="90 0 0" width="8" height="8" material="src: #ceiling; side: double"></a-plane>
 
-    <!-- Floor & Ceiling (square planes big enough to cover the footprint) -->
-    <a-plane position="0 0 0" rotation="-90 0 0" width="8" height="8"
-             material="shader: flat; src: #floor; side: double"></a-plane>
-    <a-plane position="0 3.6 0" rotation="90 0 0" width="8" height="8"
-             material="shader: flat; src: #ceiling; side: double"></a-plane>
+    <!-- Hexagon Walls (no rotation) -->
+    <a-plane position="0 1.8 -3.464" width="4" height="3.6" rotation="0 0 0" material="src: #w1; side: double"></a-plane>
+    <a-plane position="3 1.8 -1.732" width="4" height="3.6" rotation="0 300 0" material="src: #w2; side: double"></a-plane>
+    <a-plane position="3 1.8 1.732" width="4" height="3.6" rotation="0 240 0" material="src: #w3; side: double"></a-plane>
+    <a-plane position="0 1.8 3.464" width="4" height="3.6" rotation="0 180 0" material="src: #w4; side: double"></a-plane>
+    <a-plane position="-3 1.8 1.732" width="4" height="3.6" rotation="0 120 0" material="src: #w5; side: double"></a-plane>
+    <a-plane position="-3 1.8 -1.732" width="4" height="3.6" rotation="0 60 0" material="src: #w6; side: double"></a-plane>
 
-    <!--
-      Hexagon ring: radius ≈ 3.464 when each wall width = 4 (matches hex geometry).
-      Walls are 2.6 tall (adjust as you like).
-    -->
-    <a-plane position="0 1.8 -3.464" width="4" height="3.6"
-             material="shader: flat; src: #w1; side: double" look-at="#center"></a-plane>
-
-    <a-plane position="3.0 1.8 -1.732" width="4" height="3.6"
-             material="shader: flat; src: #w2; side: double" look-at="#center"></a-plane>
-
-    <a-plane position="3.0 1.8 1.732" width="4" height="3.6"
-             material="shader: flat; src: #w3; side: double" look-at="#center"></a-plane>
-
-    <a-plane position="0 1.8 3.464" width="4" height="3.6"
-             material="shader: flat; src: #w4; side: double" look-at="#center"></a-plane>
-
-    <a-plane position="-3.0 1.8 1.732" width="4" height="3.6"
-             material="shader: flat; src: #w5; side: double" look-at="#center"></a-plane>
-
-    <a-plane position="-3.0 1.8 -1.732" width="4" height="3.6"
-             material="shader: flat; src: #w6; side: double" look-at="#center"></a-plane>
-   
-    <script>
-      document.addEventListener("keydown", function (e) {
-                   // Change "r" to another key if you prefer (Changed to "q")
-                   if (e.key === "q" || e.key === "Q") {
-                     const cam = document.querySelector("#cam");
-
-                     // Reset position (eye level, center of room)
-                     cam.setAttribute("position", {x: 0, y: 1.8, z: 0});
-
-                     // Reset rotation (looking straight ahead)
-                     cam.setAttribute("rotation", {x: 0, y: 0, z: 0});
-      
-                     // Also reset the internal look-controls rotation
-                     cam.components["look-controls"].pitchObject.rotation.x = 0;
-                     cam.components["look-controls"].yawObject.rotation.y = 0;
-                   }
-      });
-    </script>
-
+    <!-- Camera -->
+    <a-entity id="cam" camera
+              look-controls="pitchEnabled: true; maxPitch: 90; minPitch: -90"
+              wasd-controls
+              position="0 1.8 0">
+    </a-entity>
   </a-scene>
+
+  <!-- Reset View Button -->
+  <button id="resetBtn">Reset View</button>
+
+  <!-- Reset button functionality -->
+  <script>
+    window.addEventListener('load', () => {
+      const cam = document.querySelector("#cam");
+      const btn = document.querySelector("#resetBtn");
+
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation(); // Prevent A-Frame from intercepting the click
+
+        // Reset camera position
+        cam.setAttribute("position", {x: 0, y: 1.8, z: 0});
+
+        // Reset camera rotation via look-controls
+        const lookControls = cam.components["look-controls"];
+        if (lookControls) {
+          lookControls.pitchObject.rotation.x = 0;
+          lookControls.yawObject.rotation.y = 0;
+          lookControls.rollObject.rotation.z = 0;
+          cam.setAttribute("rotation", {x: 0, y: 0, z: 0});
+        }
+      });
+    });
+  </script>
 </body>
 </html>
