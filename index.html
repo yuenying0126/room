@@ -51,8 +51,8 @@
 
     <!-- Camera -->
     <a-entity id="cam" camera
-              look-controls="pitchEnabled: true; maxPitch: 90; minPitch: -90"
-              wasd-controls
+              look-controls="pointerLockEnabled: false; touchEnabled: true; mouseEnabled: true; hmdEnabled: true; pitchEnabled: true; maxPitch: 90; minPitch: -90"
+              wasd-controls="acceleration: 20"
               position="0 1.8 0">
     </a-entity>
   </a-scene>
@@ -85,3 +85,4 @@
   </script>
 </body>
 </html>
+
